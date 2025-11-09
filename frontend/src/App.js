@@ -68,7 +68,7 @@ function App() {
         />
 
         {/* Category page */}
-        <Route path="/category/:name" element={<CategoryPage />} />
+        <Route path="/category/:slug" element={<CategoryPage />} />
         {/* Product detail page */}
         <Route path="/product/:category/:id" element={<ProductPage />} />
         <Route path="/cart" element={<CartPage />} />

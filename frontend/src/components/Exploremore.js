@@ -17,7 +17,7 @@ const ExploreMore = () => {
       setLoading(true);
       try {
         const response = await api.get("/products");
-        setProducts(response.data.data || []);
+        setProducts(response.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err);
@@ -70,7 +70,7 @@ const ExploreMore = () => {
                 price: product.price
                   ? Number(product.price)
                   : Number(product.main_price.replace(/[^\d.-]/g, "")),
-                image: product.thumbnail_image || "/placeholder.png",
+                image: product.image || "/placeholder.png",
               }}
               handleAddToCart={() => handleAddToCart(product)}
               handleAddToWishList={() => handleAddToWishList(product)}

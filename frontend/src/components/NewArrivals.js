@@ -21,6 +21,7 @@ const NewArrivals = () => {
       try {
         const response = await api.get("/products");
         setProducts(response.data || []);
+        console.log("Fetched products:", response.data);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err);

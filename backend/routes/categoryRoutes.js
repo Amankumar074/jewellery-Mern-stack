@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import Category from '../models/categoryModel.js';
+import Category from "../models/categoryModel.js";
+import slugify from "slugify";
 
 const router = express.Router();
 
@@ -15,15 +16,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// -------------------- ROUTES --------------------
-
 // Create new category with image
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { name, description } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const slug = slugify(name, { lower: true });
 
-    const category = new Category({ name, description, image });
+    const category = new Category({ name, description, image, slug });
     await category.save();
 
     res.status(201).json(category);
@@ -34,8 +34,12 @@ router.post("/", upload.single("image"), async (req, res) => {
 
 // Get all categories
 router.get("/", async (req, res) => {
-  const categories = await Category.find();
-  res.json(categories);
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 export default router;

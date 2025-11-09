@@ -10,7 +10,7 @@ import ProductCard from "../components/ProductCard";
 import api from "../api/api";
 
 const CategoryPage = () => {
-  const { name } = useParams();
+  const { slug } = useParams();
   const [category, setCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -34,10 +34,10 @@ const CategoryPage = () => {
     const fetchCategories = async () => {
       try {
         const response = await api.get("/categories");
-        const allCategories = response.data.data || [];
+        const allCategories = response.data || [];
         setCategories(allCategories);
         const currentCategory = allCategories.find(
-          (cat) => cat.slug === name || cat.id == name
+          (cat) => cat.slug === slug
         );
         setCategory(currentCategory);
       } catch (err) {
@@ -46,13 +46,15 @@ const CategoryPage = () => {
       }
     };
     fetchCategories();
-  }, [name]);
+  }, [slug]);
+  console.log("🔹 slug from URL:", slug);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/products/category/${name}`);
+        const response = await api.get(`/products`);
         setProducts(response.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -62,19 +64,21 @@ const CategoryPage = () => {
       }
     };
     fetchProducts();
-  }, [name]);
+  }, [slug]);
 
   if (loading) {
     return <p className="text-center py-10">Loading products...</p>;
   }
 
   if (error) {
+    console.error("Error state:", error);
     return (
       <p className="text-center text-red-500 py-10">
         Failed to load products. Please try again.
       </p>
     );
   }
+
 
   return (
     <div className="min-h-screen">
@@ -212,6 +216,7 @@ const CategoryPage = () => {
             </div>
           </div>
 
+
           {/* Products Grid */}
           <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-2">
             {products.map((product, index) => (
@@ -222,11 +227,11 @@ const CategoryPage = () => {
                   price: product.price
                     ? Number(product.price)
                     : Number(product.main_price.replace(/[^\d.-]/g, "")),
-                  image: product.thumbnail_image || "/placeholder.png",
+                  image: product.image || "/placeholder.png",
                 }}
                 handleAddToCart={handleAddToCart}
                 handleAddToWishList={handleAddToWishList}
-                link={`/product/${name}/${index}`} // ✅ Only image clickable
+                link={`/product/${slug}/${index}`} // ✅ Only image clickable
               />
             ))}
           </div>

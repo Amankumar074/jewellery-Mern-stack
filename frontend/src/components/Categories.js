@@ -60,7 +60,7 @@ const Categories = () => {
         >
           {categories.map((item, i) => (
             <SwiperSlide key={i} className="px-1 py-3">
-              <Link to={`/category/${item.slug || item._id}`}>
+              <Link to={`/category/${item.slug}`}>
                 <div
                   className="border-1 border-[#d5b67a] rounded-2xl flex flex-col items-center transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(213,182,122,0.4)] hover:scale-102"
                   style={{ backgroundImage: "url('/homepage/productbg.png')" }}

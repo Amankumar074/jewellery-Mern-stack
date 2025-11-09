@@ -20,7 +20,6 @@ function Header() {
       try {
         const response = await api.get("/categories");
        setCategories(response.data || []);
-       console.log("Category API Response:", response.data);
 
       } catch (err) {
         console.error("Error fetching categories:", err);
