@@ -15,7 +15,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-100 bg-gray-100">
       <aside className="w-64 bg-[#2C2F59] text-white flex flex-col">
         <div className="p-4 text-2xl font-bold border-b border-gray-700">
           Admin Panel
@@ -47,7 +47,7 @@ export default function AdminLayout() {
           Change Password
         </Link>
       </aside>
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-6 overflow-auto h-100">
         <Outlet />
       </main>
     </div>
