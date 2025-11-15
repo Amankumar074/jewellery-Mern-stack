@@ -1,7 +1,13 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+
+  // Redirect to dashboard by default
+  useEffect(() => {
+    navigate("/admin/dashboard");
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("admin");
@@ -34,9 +40,12 @@ export default function AdminLayout() {
         >
           Logout
         </button>
-         <Link to="/admin/changepassword" className="font-semibold bg-red-400 py-2 flex justify-center rounded-lg mx-4 mb-2">
-            Change Password
-          </Link>
+        <Link
+          to="/admin/changepassword"
+          className="font-semibold bg-red-400 py-2 flex justify-center rounded-lg mx-4 mb-2"
+        >
+          Change Password
+        </Link>
       </aside>
       <main className="flex-1 p-6 overflow-auto">
         <Outlet />

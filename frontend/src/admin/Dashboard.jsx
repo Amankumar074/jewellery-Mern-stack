@@ -34,23 +34,26 @@ export default function Dashboard() {
 
   // Add Category
   const addCategory = async () => {
-    if (!newCategory) return;
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/admin/categories",
-        { name: newCategory },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setCategories([...categories, res.data]);
-      setNewCategory("");
-    } catch (err) {
-      console.log(err);
-      alert(err.response?.data?.message || "Error adding category");
-    }
-  };
+  if (!newCategory) return;
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/admin/categories",
+      { name: newCategory },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setCategories([...categories, res.data]);
+    setNewCategory("");
+    alert("Category added successfully!"); // Success message
+  } catch (err) {
+    console.log(err);
+    alert(err.response?.data?.message || "Error adding category");
+  }
+};
+
 
   // Add Product
-  const addProduct = async () => {
+ const addProduct = async () => {
   if (!newProduct.name || !newProduct.price || !newProduct.category) return;
 
   try {
@@ -73,6 +76,7 @@ export default function Dashboard() {
 
     setProducts([...products, res.data]);
     setNewProduct({ name: "", price: "", category: "", image: null });
+    alert("Product added successfully!"); // Success message
   } catch (err) {
     console.log(err);
     alert(err.response?.data?.message || "Error adding product");
@@ -80,14 +84,18 @@ export default function Dashboard() {
 };
 
 
-  // Delete Category
   // Delete category
 const deleteCategory = async (id) => {
+  // Ek baar confirm popup
+  const confirmDelete = window.confirm("Are you sure you want to delete this category?");
+  if (!confirmDelete) return;
+
   try {
     await axios.delete(`http://localhost:5000/api/admin/categories/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     setCategories(categories.filter((c) => c._id !== id));
+    alert("Category deleted successfully!"); // Delete hone ke baad success message
   } catch (err) {
     console.log(err);
     alert(err.response?.data?.message || "Error deleting category");
@@ -96,14 +104,22 @@ const deleteCategory = async (id) => {
 
   // Delete Product
   const deleteProduct = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/admin/products/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      setProducts(products.filter((p) => p._id !== id));
-    } catch (err) {
-      console.log(err);
-      alert("Error deleting product");
-    }
-  };
+  // Ek baar confirm popup
+  const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+  if (!confirmDelete) return;
+
+  try {
+    await axios.delete(`http://localhost:5000/api/admin/products/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setProducts(products.filter((p) => p._id !== id));
+    alert("Product deleted successfully!"); // Success message
+  } catch (err) {
+    console.log(err);
+    alert(err.response?.data?.message || "Error deleting product");
+  }
+};
+
 
   if (loading) return <p>Loading...</p>;
 
