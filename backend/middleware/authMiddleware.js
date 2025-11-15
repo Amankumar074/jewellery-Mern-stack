@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-// Protect routes
 export const protect = async (req, res, next) => {
   let token;
   if (req.headers.authorization?.startsWith("Bearer")) {
@@ -11,6 +10,7 @@ export const protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select("-password");
       next();
     } catch (error) {
+      console.log(error);
       res.status(401).json({ message: "Not authorized, token failed" });
     }
   } else {
@@ -18,7 +18,6 @@ export const protect = async (req, res, next) => {
   }
 };
 
-// Admin check middleware
 export const admin = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
     next();

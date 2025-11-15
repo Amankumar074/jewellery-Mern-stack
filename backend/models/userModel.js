@@ -11,16 +11,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Password match method
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Pre-save: hash password if modified and not already hashed
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") || this.password.startsWith("$2b$")) {
-    return next();
-  }
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });

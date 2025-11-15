@@ -33,6 +33,7 @@ import ProtectedRoute from "./admin/ProtectedRoute";
 import Dashboard from "./admin/Dashboard";
 import Products from "./admin/Products";
 import Orders from "./admin/Orders";
+import ChangePassword from "./admin/ChangePassword";
 import { CartProvider } from "./context/CartContext";
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -89,6 +90,7 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="categories" element={<Categories />} />
             <Route path="orders" element={<Orders />} />
+            <Route path="changepassword" element={<ChangePassword />} />
           </Route>
 
 

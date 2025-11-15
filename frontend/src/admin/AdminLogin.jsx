@@ -21,6 +21,8 @@ export default function AdminLogin() {
       }
 
       localStorage.setItem("admin", JSON.stringify(data));
+      localStorage.setItem("token", data.token); // ✅ Save token
+
       navigate("/admin/dashboard");
     } catch (err) {
       console.error(err.response?.data);

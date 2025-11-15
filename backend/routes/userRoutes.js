@@ -1,12 +1,21 @@
 import express from "express";
+import { protect, admin } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
 
+// Public
 router.get("/", (req, res) => {
-  res.json({ message: "Get all users" });
+  res.json({ message: "Public: Get all users" });
 });
 
-router.post("/", (req, res) => {
-  res.json({ message: "Add a user" });
+// Protected
+router.get("/profile", protect, (req, res) => {
+  res.json({ message: "Your profile", user: req.user });
+});
+
+// Admin-only
+router.get("/admin", protect, admin, (req, res) => {
+  res.json({ message: "Admin-only access" });
 });
 
 export default router;
