@@ -51,20 +51,34 @@ export default function Dashboard() {
 
   // Add Product
   const addProduct = async () => {
-    if (!newProduct.name || !newProduct.price || !newProduct.category) return;
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/products",
-        newProduct,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setProducts([...products, res.data]);
-      setNewProduct({ name: "", price: "", category: "" });
-    } catch (err) {
-      console.log(err);
-      alert(err.response?.data?.message || "Error adding product");
-    }
-  };
+  if (!newProduct.name || !newProduct.price || !newProduct.category) return;
+
+  try {
+    const formData = new FormData();
+    formData.append("name", newProduct.name);
+    formData.append("price", newProduct.price);
+    formData.append("category", newProduct.category);
+    if (newProduct.image) formData.append("image", newProduct.image);
+
+    const res = await axios.post(
+      "http://localhost:5000/api/admin/products",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setProducts([...products, res.data]);
+    setNewProduct({ name: "", price: "", category: "", image: null });
+  } catch (err) {
+    console.log(err);
+    alert(err.response?.data?.message || "Error adding product");
+  }
+};
+
 
   // Delete Category
   // Delete category
@@ -83,7 +97,7 @@ const deleteCategory = async (id) => {
   // Delete Product
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`http://localhost:5000/api/admin/products/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       setProducts(products.filter((p) => p._id !== id));
     } catch (err) {
       console.log(err);
