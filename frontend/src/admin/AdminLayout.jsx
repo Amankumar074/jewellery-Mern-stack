@@ -1,13 +1,8 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
 
-  // Redirect to dashboard by default
-  useEffect(() => {
-    navigate("/admin/dashboard");
-  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("admin");
