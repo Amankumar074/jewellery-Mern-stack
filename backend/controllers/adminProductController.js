@@ -1,10 +1,29 @@
 import Product from "../models/productModel.js";
 
+const BASE_URL = "http://localhost:5000";
+
+// Helper to get full image URL
+const getFullImageUrl = (file) => {
+  if (!file) return null;
+  // If file is already an absolute URL, return it
+  if (file.startsWith("http://") || file.startsWith("https://")) return file;
+  return `${BASE_URL}/uploads/${file}`;
+};
+
 // GET all products
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category");
-    res.json(products);
+
+    // Ensure image URLs are absolute
+    const productsWithFullUrl = products.map((product) => {
+      return {
+        ...product._doc,
+        image: getFullImageUrl(product.image),
+      };
+    });
+
+    res.json(productsWithFullUrl);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -13,10 +32,24 @@ export const getProducts = async (req, res) => {
 // CREATE product
 export const createProduct = async (req, res) => {
   try {
-    const { name, price, description, category, image } = req.body;
-    const product = new Product({ name, price, description, category, image });
+    const { name, price, description, category } = req.body;
+
+    // Save full URL instead of just filename
+    const image = req.file ? getFullImageUrl(req.file.filename) : null;
+
+    const product = new Product({
+      name,
+      price,
+      description,
+      category,
+      image,
+    });
+
     await product.save();
-    res.status(201).json(product);
+    res.status(201).json({
+      ...product._doc,
+      image: getFullImageUrl(product.image),
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -25,7 +58,8 @@ export const createProduct = async (req, res) => {
 // UPDATE product
 export const updateProduct = async (req, res) => {
   try {
-    const { name, price, description, category, image } = req.body;
+    const { name, price, description, category } = req.body;
+
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -33,10 +67,18 @@ export const updateProduct = async (req, res) => {
     product.price = price || product.price;
     product.description = description || product.description;
     product.category = category || product.category;
-    product.image = image || product.image;
+
+    // Update image if a new file is uploaded
+    if (req.file) {
+      product.image = getFullImageUrl(req.file.filename);
+    }
 
     await product.save();
-    res.json(product);
+
+    res.json({
+      ...product._doc,
+      image: getFullImageUrl(product.image),
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

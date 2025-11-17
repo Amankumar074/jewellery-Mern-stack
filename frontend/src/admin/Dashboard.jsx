@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   // New category/product
   const [newCategory, setNewCategory] = useState("");
-  const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "" });
+  const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "", image: null });
 
   // Fetch categories & products
   const fetchData = async () => {
@@ -54,14 +54,19 @@ export default function Dashboard() {
 
   // Add Product
  const addProduct = async () => {
-  if (!newProduct.name || !newProduct.price || !newProduct.category) return;
+  if (!newProduct.name || !newProduct.price || !newProduct.category || !newProduct.image) return;
 
   try {
     const formData = new FormData();
     formData.append("name", newProduct.name);
     formData.append("price", newProduct.price);
     formData.append("category", newProduct.category);
-    if (newProduct.image) formData.append("image", newProduct.image);
+    formData.append("image", newProduct.image);
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
 
     const res = await axios.post(
       "http://localhost:5000/api/admin/products",
@@ -163,7 +168,7 @@ const deleteCategory = async (id) => {
       {/* Products Section */}
       <div>
         <h2 className="text-2xl font-semibold mb-4">Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
           <input
             type="text"
             placeholder="Product Name"
@@ -188,6 +193,11 @@ const deleteCategory = async (id) => {
               <option key={cat._id} value={cat._id}>{cat.name}</option>
             ))}
           </select>
+          <input
+            type="file"
+            className="border p-2 rounded"
+            onChange={(e) => setNewProduct({ ...newProduct, image: e.target.files[0] })}
+          />
           <button
             onClick={addProduct}
             className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600"
